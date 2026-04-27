@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlayMatch - Encontrar Locais</title>
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 400px;
+            width: 100%;
+            margin: 20px 0;
+            border-radius: 8px;
+            z-index: 1;
+            display: none; /* Escondido inicialmente */
+        }
+        #modalMap {
+            height: 300px;
+            width: 100%;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+        .venue-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 20px 0;
+        }
+        .venue-item {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .venue-item:hover {
+            background-color: #f8f9fa;
+        }
+        .venue-name {
+            font-weight: bold;
+            color: #2c5530;
+        }
+        .venue-sport {
+            background: #e8f5e8;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            margin-left: 8px;
+        }
+        .location-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .search-container {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .search-container input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .btn-primary {
+            background: #2c5530;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-primary:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <h1 class="logo">PlayMatch</h1>
+        <nav>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link">Início</a></li>
+                <li class="nav-item"><a href="minhas_partidas.html" class="nav-link">Minhas Partidas</a></li>
+            
+                <li class="nav-item"><a href="perfil.html" class="nav-link">Perfil</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <h2>🎯 Encontrar Quadras e Campos Próximos</h2>
+        
+        <div class="location-buttons">
+            <button onclick="getUserLocation()" class="btn-primary">
+                📍 Usar Minha Localização
+            </button>
+            <button onclick="createMatchAtLocation()" class="btn-secondary">
+                ➕ Criar Partida Aqui
+            </button>
+        </div>
+
+        <!-- Mapa inicialmente escondido -->
+        <div id="mapContainer" style="display: none;">
+            <div id="map"></div>
+            
+            <h3>Locais Encontrados:</h3>
+            <div class="venue-list" id="venueList">
+                <div class="loading" id="loadingMessage">
+                    🗺️ Buscando locais próximos...
+                </div>
+            </div>
+
+            <h3>🔍 Buscar por endereço:</h3>
+            <div class="search-container">
+                <input type="text" id="addressInput" placeholder="Digite um endereço...">
+                <button onclick="searchByAddress()" class="btn-secondary">Buscar</button>
+            </div>
+        </div>
+
+        <!-- Mensagem inicial -->
+        <div id="initialMessage" style="text-align: center; padding: 40px 20px; color: #666;">
+            <h3>🎯 Selecione uma opção acima para começar</h3>
+            <p>Use sua localização para encontrar quadras próximas ou crie uma partida em um local específico</p>
+        </div>
+
+        <!-- Modal para criação de partida -->
+        <div id="locationModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+            <div style="background: white; padding: 20px; border-radius: 10px; width: 90%; max-width: 500px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                <h3>🎯 Confirmar Local da Partida</h3>
+                
+                <div id="modalMap"></div>
+                
+                <div style="margin: 15px 0;">
+                    <strong>Local selecionado:</strong>
+                    <div id="selectedLocationInfo" style="color: #666; margin-top: 5px;">
+                        Buscando sua localização...
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <button onclick="closeLocationModal()" class="btn-secondary" style="padding: 8px 16px;">
+                        Cancelar
+                    </button>
+                    <button onclick="confirmLocation()" class="btn-primary" style="padding: 8px 16px;" id="confirmBtn" disabled>
+                        Confirmar Local
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Adicione este modal no final do main-content -->
+<div id="createMatchModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+    <div style="background: white; padding: 25px; border-radius: 10px; width: 90%; max-width: 500px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <h3>🎯 Criar Nova Partida</h3>
+        
+        <div style="margin: 15px 0;">
+            <strong>Local selecionado:</strong>
+            <div id="matchLocationInfo" style="color: #666; margin-top: 5px; background: #f8f9fa; padding: 8px; border-radius: 4px;">
+                Carregando informações...
+            </div>
+        </div>
+
+        <div style="margin: 15px 0;">
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Esporte:</label>
+            <select id="sportSelect" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                <option value="Futebol">⚽ Futebol</option>
+                <option value="Basquete">🏀 Basquete</option>
+                <option value="Vôlei">🏐 Vôlei</option>
+                <option value="Tênis">🎾 Tênis</option>
+                <option value="Futsal">👟 Futsal</option>
+                <option value="Society">🥅 Society</option>
+            </select>
+        </div>
+
+        <div style="margin: 15px 0;">
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Data e Horário:</label>
+            <input type="datetime-local" id="matchDateTime" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+        </div>
+
+        <div style="margin: 15px 0;">
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Número de Jogadores:</label>
+            <input type="number" id="playersCount" min="2" max="50" value="10" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+        </div>
+
+        <div style="margin: 15px 0;">
+            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Descrição (opcional):</label>
+            <textarea id="matchDescription" placeholder="Ex: Partida amistosa, trazer uniforme..." style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; height: 60px;"></textarea>
+        </div>
+        
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+            <button onclick="closeCreateMatchModal()" class="btn-secondary" style="padding: 8px 16px;">
+                Cancelar
+            </button>
+            <button onclick="saveMatch()" class="btn-primary" style="padding: 8px 16px;">
+                ✅ Criar Partida
+            </button>
+        </div>
+    </div>
+</div>
+    </main>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="js/maps.js"></script>
+</body>
+</html>

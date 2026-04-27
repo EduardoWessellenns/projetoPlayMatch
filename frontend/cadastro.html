@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro - PlayMatch</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #e0e3e4;
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      background-color: #0e2244;
+      color: #fff;
+      text-align: center;
+      font-weight: bold;
+      padding: 15px 0;
+      width: 100%;
+      font-size: 20px;
+    }
+
+    .content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .form-box {
+      width: 100%;
+      max-width: 500px;
+      padding: 20px 40px;
+    }
+
+    h2 {
+      font-size: 26px;
+      font-weight: 800;
+      color: #000;
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-top: 15px;
+      font-size: 14px;
+      color: #000;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: none;
+      border-radius: 8px;
+      background-color: #fff;
+      font-size: 14px;
+    }
+
+    .btn {
+      background-color: #4CAF50;
+      color: white;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 0;
+      margin-top: 25px;
+      width: 100%;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .btn:hover {
+      background-color: #45a049;
+    }
+
+    .btn:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+
+    .message {
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+      text-align: center;
+      display: none;
+    }
+
+    .success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .loading {
+      background-color: #fff3cd;
+      color: #856404;
+      border: 1px solid #ffeaa7;
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .login-link a {
+      color: #0e2244;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">PlayMatch</div>
+
+  <div class="content">
+    <div class="form-box">
+      <h2>Criar sua conta</h2>
+      
+      <div id="message" class="message"></div>
+      
+      <form id="registerForm">
+        <label for="nome">Nome completo</label>
+        <input type="text" id="nome" name="nome" required placeholder="Digite seu nome completo">
+
+        <label for="email">E-mail</label>
+        <input type="email" id="email" name="email" required placeholder="seu@email.com">
+
+        <label for="senha">Senha</label>
+        <input type="password" id="senha" name="senha" required placeholder="Mínimo 6 caracteres" minlength="6">
+
+        <label for="confirmar">Confirmar senha</label>
+        <input type="password" id="confirmar" name="confirmar" required placeholder="Digite a senha novamente">
+
+        <button type="submit" class="btn" id="submitBtn">Cadastrar</button>
+      </form>
+
+      <div class="login-link">
+        Já tem uma conta? <a href="login.html">Faça login</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('registerForm');
+  const messageDiv = document.getElementById('message');
+  const submitBtn = document.getElementById('submitBtn');
+
+  function showMessage(text, type) {
+    messageDiv.textContent = text;
+    messageDiv.className = `message ${type}`;
+    messageDiv.style.display = 'block';
+  }
+
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const nome = document.getElementById('nome').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const senha = document.getElementById('senha').value;
+    const confirmar = document.getElementById('confirmar').value;
+
+    console.log('📝 Tentando cadastrar:', { nome, email });
+
+    // Validações básicas
+    if (senha !== confirmar) {
+      showMessage('As senhas não coincidem!', 'error');
+      return;
+    }
+
+    // Mostrar loading
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Cadastrando...';
+    showMessage('Enviando dados...', 'loading');
+
+    try {
+      console.log('🔄 Fazendo requisição para API...');
+      
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: nome,
+          email: email,
+          password: senha
+        })
+      });
+
+      console.log('📨 Resposta recebida:', response.status);
+
+      if (!response.ok) {
+        throw new Error(`Erro HTTP: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('✅ Resultado:', result);
+
+      if (result.success) {
+        showMessage('🎉 ' + result.message, 'success');
+        
+        // ✅ SALVAR OS DADOS NO LOCALSTORAGE
+        localStorage.setItem('fitmatch_token', result.token);
+        localStorage.setItem('fitmatch_user', JSON.stringify(result.user));
+        
+        console.log('✅ Usuário logado após cadastro:', result.user.name);
+        console.log('✅ Token salvo:', result.token);
+        
+        // ✅ REDIRECIONAR DIRETO PARA PÁGINA PRINCIPAL
+        setTimeout(() => {
+          window.location.href = '/'; // Vai direto para a página inicial
+        }, 1500);
+
+      } else {
+        showMessage('❌ ' + (result.message || 'Erro no cadastro'), 'error');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Cadastrar';
+      }
+
+    } catch (error) {
+      console.error('❌ Erro completo:', error);
+      showMessage('❌ Erro de conexão com o servidor', 'error');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Cadastrar';
+    }
+  });
+});
+</script>
+</body>
+</html>

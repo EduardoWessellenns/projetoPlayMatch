@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlayMatch - Partidas Disponíveis</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .matches-container {
+            margin: 20px 0;
+        }
+        .match-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .match-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .match-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .match-sport {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2c5530;
+        }
+        .match-distance {
+            background: #e8f5e8;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            color: #2c5530;
+        }
+        .match-details {
+            color: #666;
+            margin: 12px 0;
+        }
+        .match-info {
+            display: flex;
+            gap: 15px;
+            margin: 8px 0;
+            flex-wrap: wrap;
+        }
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9em;
+        }
+        .match-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .btn-join {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-details {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .btn-refresh {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+        }
+        .loading {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+        }
+        .filter-container {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .filter-options {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+        }
+        .user-location {
+            background: #e8f5e8;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .players-count {
+            background: #007bff;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <h1 class="logo">PlayMatch</h1>
+        <nav>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link">Início</a></li>
+                <li class="nav-item"><a href="minhas-partidas.html" class="nav-link">Minhas Partidas</a></li>
+                <li class="nav-item"><a href="perfil.html" class="nav-link">Perfil</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <h2>🎯 Partidas Disponíveis Próximas</h2>
+        
+        <div class="user-location" id="userLocationInfo">
+            <div>
+                <strong>📍 Sua localização:</strong>
+                <span id="locationText">Buscando sua localização...</span>
+            </div>
+            <button onclick="refreshLocation()" class="btn-refresh">🔄 Atualizar</button>
+        </div>
+
+        <div class="filter-container">
+            <h4>🔍 Filtrar Partidas:</h4>
+            <div class="filter-options">
+                <select id="sportFilter" class="filter-select" onchange="filterMatches()">
+                    <option value="all">Todos os Esportes</option>
+                    <option value="Futebol">⚽ Futebol</option>
+                    <option value="Basquete">🏀 Basquete</option>
+                    <option value="Vôlei">🏐 Vôlei</option>
+                    <option value="Tênis">🎾 Tênis</option>
+                    <option value="Futsal">👟 Futsal</option>
+                </select>
+                
+                <select id="distanceFilter" class="filter-select" onchange="filterMatches()">
+                    <option value="5">Até 5 km</option>
+                    <option value="10">Até 10 km</option>
+                    <option value="20">Até 20 km</option>
+                    <option value="50">Até 50 km</option>
+                </select>
+                
+                <select id="dateFilter" class="filter-select" onchange="filterMatches()">
+                    <option value="all">Qualquer Data</option>
+                    <option value="today">Hoje</option>
+                    <option value="tomorrow">Amanhã</option>
+                    <option value="weekend">Este Fim de Semana</option>
+                </select>
+            </div>
+        </div>
+
+        <button onclick="refreshMatches()" class="btn-refresh">
+            🔄 Buscar Partidas Novas
+        </button>
+
+        <div class="matches-container" id="matchesList">
+            <div class="loading" id="loadingMessage">
+                🗺️ Buscando partidas próximas à sua localização...
+            </div>
+        </div>
+    </main>
+
+    <script src="js/nearby-matches.js"></script>
+</body>
+</html>

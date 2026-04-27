@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlayMatch - Perfil</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .profile-container {
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .profile-form {
+            flex: 1;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .profile-info {
+            flex: 0 0 250px;
+            text-align: center;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #1a2744;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5em;
+            font-weight: bold;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            border: 3px solid #1a2744;
+            transition: all 0.3s ease;
+        }
+        .avatar:hover {
+            border-color: #1a2744;
+        }
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .avatar-edit-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8em;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .avatar:hover .avatar-edit-overlay {
+            opacity: 1;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #1a2744;
+            font-size: 14px;
+        }
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            background-color: #f8f9fa;
+        }
+        .form-input:focus {
+            border-color: #1a2744;
+            outline: none;
+        }
+        .btn-edit {
+            background: green;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-right: 10px;
+            transition: background 0.3s;
+        }
+        .btn-edit:hover {
+            background: green;
+        }
+        .btn-save {
+            background: green;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-right: 10px;
+            transition: background 0.3s;
+        }
+        .btn-save:hover {
+            background: #1a2744;
+        }
+        .btn-cancel {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-right: 10px;
+            transition: background 0.3s;
+        }
+        .btn-cancel:hover {
+            background: #545b62;
+        }
+        .btn-logout {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 15px;
+            transition: background 0.3s;
+        }
+        .btn-logout:hover {
+            background: #c82333;
+        }
+        .profile-stats {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 25px;
+        }
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .stat-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        .message {
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+        .message.success {
+            background: #d4edda;
+            color: #1a2744;
+            border: 1px solid #c3e6cb;
+        }
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .rating {
+            margin: 15px 0;
+        }
+        .star {
+            font-size: 1.5em;
+        }
+        #avatarInput {
+            display: none;
+        }
+        .avatar-section {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none; /* Inicialmente escondido */
+        }
+        .avatar-actions {
+            margin-top: 15px;
+        }
+        .btn-change-avatar {
+            background: green;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+            transition: background 0.3s;
+        }
+        .btn-change-avatar:hover {
+            background: #1e3a23;
+        }
+        .btn-remove-avatar {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+            transition: background 0.3s;
+        }
+        .btn-remove-avatar:hover {
+            background: #c82333;
+        }
+        .avatar-preview {
+            margin: 15px 0;
+        }
+
+        .form-actions {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.form-actions .btn-save,
+.form-actions .btn-cancel {
+    display: inline-block;
+    margin: 0 10px;
+}
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <h1 class="logo">PlayMatch</h1>
+        <nav>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link">Início</a></li>
+                <li class="nav-item"><a href="minhas_partidas.html" class="nav-link">Minhas Partidas</a></li>
+                <li class="nav-item"><a href="perfil.html" class="nav-link active">Perfil</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <h2 class="page-title">👤 Perfil</h2>
+
+        <div class="profile-container" id="profileContainer">
+            <div class="profile-form">
+                <div id="profileMessage" class="message"></div>
+                
+                <div class="form-group">
+                    <label for="name" class="form-label">Nome</label>
+                    <input type="text" id="name" class="form-input" placeholder="Ex: João Pedro" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">E-mail</label>
+                    <input type="email" id="email" class="form-input" placeholder="seu@email.com" readonly>
+                </div>
+
+                <!-- Seção da Foto de Perfil (aparece apenas no modo edição) -->
+                <div class="avatar-section" id="avatarSection">
+                    <h3 style="color: #2c5530; margin-bottom: 15px;">📷 Foto de Perfil</h3>
+                    
+                    <div class="avatar-preview">
+                        <div class="avatar" id="avatarPreview" onclick="document.getElementById('avatarInput').click()">
+                            <div id="avatarPreviewContent">M</div>
+                            <div class="avatar-edit-overlay">
+                                Clique para escolher foto
+                            </div>
+                        </div>
+                    </div>
+
+                    <input type="file" id="avatarInput" accept="image/*">
+                    
+                    <div class="avatar-actions">
+                        <button class="btn-change-avatar" onclick="document.getElementById('avatarInput').click()">
+                            📷 Escolher Foto
+                        </button>
+                        <button class="btn-remove-avatar" onclick="removeAvatar()">
+                            🗑️ Remover Foto
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn-edit" id="editBtn" onclick="toggleEditMode()">✏️ Editar Perfil</button>
+                    <button class="btn-save" id="saveBtn" onclick="saveProfile()" style="display: none;">💾 Salvar Alterações</button>
+                    <button class="btn-cancel" id="cancelBtn" onclick="cancelEdit()" style="display: none;">❌ Cancelar</button>
+                </div>
+
+                <div class="profile-stats">
+                    <h3>📊 Estatísticas</h3>
+                    <div class="stat-item">
+                        <span>Partidas jogadas:</span>
+                        <strong id="matchesPlayed">0</strong>
+                    </div>
+                    <div class="stat-item">
+                        <span>Partidas criadas:</span>
+                        <strong id="matchesCreated">0</strong>
+                    </div>
+                    <div class="stat-item">
+                        <span>Membro desde:</span>
+                        <strong id="memberSince">-</strong>
+                    </div>
+                </div>
+
+                <button class="btn-logout" onclick="logout()">🚪 Sair da Conta</button>
+            </div>
+
+            <div class="profile-info">
+                <div class="avatar" id="userAvatarDisplay">
+                    <div id="avatarDisplayContent">M</div>
+                </div>
+                <h3 id="userName">Usuário</h3>
+                <div class="rating" id="userRating">
+                    <span class="star">⭐</span>
+                    <span class="star">⭐</span>
+                    <span class="star">⭐</span>
+                    <span class="star">⭐</span>
+                    <span class="star">⭐</span>
+                </div>
+                <div class="user-level" style="margin-top: 10px;">
+                    <strong>Nível: </strong><span id="levelText">Iniciante</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+   <script>
+// Dados do usuário
+let currentUser = {
+    name: "Usuário",
+    email: "usuario@email.com",
+    memberSince: "2024-01-01",
+    matchesPlayed: 0,
+    matchesCreated: 0
+};
+
+// Elementos do DOM
+let isEditMode = false;
+
+// Carregar dados do usuário quando a página carrega
+document.addEventListener('DOMContentLoaded', function() {
+    loadUserData();
+    setupEventListeners();
+});
+
+// Carregar dados do usuário do localStorage
+function loadUserData() {
+    const userData = localStorage.getItem('fitmatch_user');
+    if (userData) {
+        const user = JSON.parse(userData);
+        currentUser.name = user.name;
+        currentUser.email = user.email;
+        
+        // Atualizar interface
+        updateUserInterface();
+    }
+}
+
+// Atualizar interface com dados do usuário
+function updateUserInterface() {
+    document.getElementById('name').value = currentUser.name;
+    document.getElementById('email').value = currentUser.email;
+    document.getElementById('userName').textContent = currentUser.name;
+    document.getElementById('matchesPlayed').textContent = currentUser.matchesPlayed;
+    document.getElementById('matchesCreated').textContent = currentUser.matchesCreated;
+    document.getElementById('memberSince').textContent = formatDate(currentUser.memberSince);
+    
+    // Avatar com primeira letra do nome
+    const firstLetter = currentUser.name.charAt(0).toUpperCase();
+    document.getElementById('avatarDisplayContent').textContent = firstLetter;
+    document.getElementById('avatarPreviewContent').textContent = firstLetter;
+}
+
+// Configurar event listeners
+function setupEventListeners() {
+    // Input da foto de perfil
+    document.getElementById('avatarInput').addEventListener('change', handleAvatarUpload);
+}
+
+// ⚠️ FUNÇÃO PRINCIPAL - Editar Perfil (NOME e EMAIL NÃO EDITÁVEIS)
+function toggleEditMode() {
+    isEditMode = !isEditMode;
+    
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const editBtn = document.getElementById('editBtn');
+    const saveBtn = document.getElementById('saveBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const avatarSection = document.getElementById('avatarSection');
+    
+    if (isEditMode) {
+        // 🔒 MODO EDIÇÃO ATIVADO - NOME e EMAIL NÃO EDITÁVEIS
+        nameInput.readOnly = true;       // ⛔ NÃO pode editar nome
+        emailInput.readOnly = true;      // ⛔ NÃO pode editar email
+        
+        // Apenas a seção de avatar fica disponível
+        avatarSection.style.display = 'block';
+        
+        // Mostrar botões de salvar/cancelar
+        editBtn.style.display = 'none';
+        saveBtn.style.display = 'inline-block';
+        cancelBtn.style.display = 'inline-block';
+        
+        showMessage('📷 Você pode alterar apenas a foto de perfil', 'success');
+        
+    } else {
+        // Modo edição DESATIVADO
+        nameInput.readOnly = true;
+        emailInput.readOnly = true;
+        avatarSection.style.display = 'none';
+        
+        // Mostrar botão editar
+        editBtn.style.display = 'inline-block';
+        saveBtn.style.display = 'none';
+        cancelBtn.style.display = 'none';
+        
+        hideMessage();
+    }
+}
+
+// Salvar perfil (apenas foto)
+function saveProfile() {
+    // Aqui você enviaria a foto para o backend
+    // Por enquanto, apenas desativa o modo edição
+    
+    showMessage('✅ Foto de perfil atualizada com sucesso!', 'success');
+    
+    // Voltar ao modo normal após 2 segundos
+    setTimeout(() => {
+        toggleEditMode();
+    }, 2000);
+}
+
+// Cancelar edição
+function cancelEdit() {
+    // Reverter qualquer alteração não salva
+    updateUserInterface();
+    toggleEditMode();
+    showMessage('Edição cancelada', 'error');
+}
+
+// Upload de avatar
+function handleAvatarUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            // Atualizar preview do avatar
+            const avatarPreview = document.getElementById('avatarPreviewContent');
+            const avatarDisplay = document.getElementById('avatarDisplayContent');
+            
+            avatarPreview.innerHTML = `<img src="${e.target.result}" alt="Preview" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+            avatarDisplay.innerHTML = `<img src="${e.target.result}" alt="Avatar" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+            
+            showMessage('✅ Foto selecionada! Clique em "Salvar Alterações" para confirmar.', 'success');
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+// Remover avatar
+function removeAvatar() {
+    const firstLetter = currentUser.name.charAt(0).toUpperCase();
+    
+    document.getElementById('avatarPreviewContent').textContent = firstLetter;
+    document.getElementById('avatarDisplayContent').textContent = firstLetter;
+    document.getElementById('avatarInput').value = '';
+    
+    showMessage('✅ Foto removida! Clique em "Salvar Alterações" para confirmar.', 'success');
+}
+
+// Fazer logout
+function logout() {
+    localStorage.removeItem('fitmatch_token');
+    localStorage.removeItem('fitmatch_user');
+    window.location.href = '/login.html';
+}
+
+// Mostrar mensagens
+function showMessage(text, type) {
+    const messageDiv = document.getElementById('profileMessage');
+    messageDiv.textContent = text;
+    messageDiv.className = `message ${type}`;
+    messageDiv.style.display = 'block';
+}
+
+function hideMessage() {
+    const messageDiv = document.getElementById('profileMessage');
+    messageDiv.style.display = 'none';
+}
+
+// Formatar data
+function formatDate(dateString) {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString('pt-BR', options);
+}
+
+// Verificar se usuário está logado
+document.addEventListener('DOMContentLoaded', function() {
+    const token = localStorage.getItem('fitmatch_token');
+    const userData = localStorage.getItem('fitmatch_user');
+    
+    if (!token || !userData) {
+        window.location.href = '/login.html';
+        return;
+    }
+    
+    // Carregar dados do usuário real
+    const user = JSON.parse(userData);
+    currentUser.name = user.name;
+    currentUser.email = user.email;
+    currentUser.memberSince = new Date().toISOString().split('T')[0]; // Data atual
+    
+    updateUserInterface();
+});
+</script>
+    
+</body>
+</html>

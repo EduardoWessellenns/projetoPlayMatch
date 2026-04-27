@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlayMatch - Avaliações</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <aside class="sidebar">
+        <h1 class="logo">PlayMatch</h1>
+        <nav>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">Início</a>
+                </li>
+                <li class="nav-item">
+                    <a href="minhas_partidas.html" class="nav-link">Minhas Partidas</a>
+                </li>
+                <li class="nav-item">
+                    <a href="perfil.html" class="nav-link">Perfil</a>
+                </li>
+            
+            </ul>
+        </nav>
+    </aside>
+
+    <div class="main-content">
+        <h1 class="page-title">Avaliações</h1>
+        
+        <!-- Seção de Avaliar Jogadores -->
+        <div class="matches-list-container">
+            <div class="match-item">
+                <div class="match-info">
+                    <h3 class="match-item-title-small">Jogador: Mario</h3>
+                    <p>Partida Jogada: 11/11/25</p>
+                </div>
+                <div class="avaliacao-estrelas" data-jogador="Mario">
+                    <span class="estrela" data-valor="1">☆</span>
+                    <span class="estrela" data-valor="2">☆</span>
+                    <span class="estrela" data-valor="3">☆</span>
+                    <span class="estrela" data-valor="4">☆</span>
+                    <span class="estrela" data-valor="5">☆</span>
+                </div>
+            </div>
+            
+            <div class="match-item">
+                <div class="match-info">
+                    <h3 class="match-item-title-small">Jogador: Jose</h3>
+                    <p>Partida Jogada: 11/11/25</p>
+                </div>
+                <div class="avaliacao-estrelas" data-jogador="Jose">
+                    <span class="estrela" data-valor="1">☆</span>
+                    <span class="estrela" data-valor="2">☆</span>
+                    <span class="estrela" data-valor="3">☆</span>
+                    <span class="estrela" data-valor="4">☆</span>
+                    <span class="estrela" data-valor="5">☆</span>
+                </div>
+            </div>
+            
+            <div class="match-item">
+                <div class="match-info">
+                    <h3 class="match-item-title-small">Jogador: Joao</h3>
+                    <p>Partida Jogada: 11/11/25</p>
+                </div>
+                <div class="avaliacao-estrelas" data-jogador="Joao">
+                    <span class="estrela" data-valor="1">☆</span>
+                    <span class="estrela" data-valor="2">☆</span>
+                    <span class="estrela" data-valor="3">☆</span>
+                    <span class="estrela" data-valor="4">☆</span>
+                    <span class="estrela" data-valor="5">☆</span>
+                </div>
+            </div>
+            
+            <div class="match-item">
+                <div class="match-info">
+                    <h3 class="match-item-title-small">Jogador: Pedro</h3>
+                    <p>Partida Jogada: 11/11/25</p>
+                </div>
+                <div class="avaliacao-estrelas" data-jogador="Pedro">
+                    <span class="estrela" data-valor="1">☆</span>
+                    <span class="estrela" data-valor="2">☆</span>
+                    <span class="estrela" data-valor="3">☆</span>
+                    <span class="estrela" data-valor="4">☆</span>
+                    <span class="estrela" data-valor="5">☆</span>
+                </div>
+            </div>
+            
+            <div class="match-item">
+                <div class="match-info">
+                    <h3 class="match-item-title-small">Jogador: Lucas</h3>
+                    <p>Partida Jogada: 11/11/25</p>
+                </div>
+                <div class="avaliacao-estrelas" data-jogador="Lucas">
+                    <span class="estrela" data-valor="1">☆</span>
+                    <span class="estrela" data-valor="2">☆</span>
+                    <span class="estrela" data-valor="3">☆</span>
+                    <span class="estrela" data-valor="4">☆</span>
+                    <span class="estrela" data-valor="5">☆</span>
+                </div>
+            </div>
+        </div>
+        
+        <div style="margin-top: 30px; text-align: center;">
+            <button class="btn-secondary" onclick="history.back()">Voltar</button>
+        </div>
+    </div>
+<script>
+ document.addEventListener('DOMContentLoaded', function() {
+            const avaliacoesEstrelas = document.querySelectorAll('.avaliacao-estrelas');
+            
+            avaliacoesEstrelas.forEach(avaliacao => {
+                const estrelas = avaliacao.querySelectorAll('.estrela');
+                const jogador = avaliacao.getAttribute('data-jogador');
+                
+                estrelas.forEach(estrela => {
+                    estrela.addEventListener('click', function() {
+                        const valor = parseInt(this.getAttribute('data-valor'));
+                        
+                        estrelas.forEach((el, index) => {
+                            el.textContent = index < valor ? '⭐' : '☆';
+                        });
+                        
+                        console.log(`Avaliação para ${jogador}: ${valor} estrelas`);
+                        
+                    });
+                    
+                    estrela.addEventListener('mouseover', function() {
+                        const valorHover = parseInt(this.getAttribute('data-valor'));
+                        
+                        estrelas.forEach((el, index) => {
+                            if (index < valorHover) {
+                                el.style.opacity = '0.7';
+                            } else {
+                                el.style.opacity = '1';
+                            }
+                        });
+                    });
+                    
+                    estrela.addEventListener('mouseout', function() {
+                        estrelas.forEach(el => {
+                            el.style.opacity = '1';
+                        });
+                    });
+                });
+            });
+        });
+        
+        function enviarAvaliacao(jogador, avaliacao) {
+            fetch('/api/avaliar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    jogador: jogador,
+                    avaliacao: avaliacao
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Avaliação enviada com sucesso:', data);
+            })
+            .catch(error => {
+                console.error('Erro ao enviar avaliação:', error);
+            });
+        }        
+  </script>
+
+  </body>
+</html>

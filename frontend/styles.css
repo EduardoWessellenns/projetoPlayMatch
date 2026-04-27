@@ -1,0 +1,657 @@
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 340px;
+            background-color: #1a2744;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 40px 30px;
+        }
+
+        .logo {
+            font-size: 42px;
+            font-weight: bold;
+            margin-bottom: 80px;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 40px;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-size: 32px;
+            font-weight: 500;
+            display: block;
+            padding: 8px 0;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: #6ec06e;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            background-color: #d9d9d9;
+            padding: 50px 80px;
+            overflow-y: auto;
+        }
+
+        .greeting {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 40px;
+            color: #000;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background-color: #6ec06e;
+            color: white;
+            border: none;
+            padding: 30px 60px;
+            font-size: 32px;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            max-width: 730px;
+            margin-bottom: 30px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .btn-partidas {
+            background-color: white;
+            color: #6ec06e;
+            border: none;
+            padding: 30px 60px;
+            font-size: 32px;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            max-width: 730px;
+            margin-bottom: 30px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        
+
+        .btn-primary:hover {
+            background-color: #5da85d;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: white;
+            color: #000;
+            border: none;
+            padding: 30px 60px;
+            font-size: 32px;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            max-width: 730px;
+            margin-bottom: 30px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background-color: #f0f0f0;
+            transform: translateY(-2px);
+        }
+
+        /* Search Input */
+        .search-container {
+            margin-bottom: 50px;
+        }
+
+        .search-input {
+            width: 100%;
+            max-width: 730px;
+            padding: 25px 30px;
+            font-size: 24px;
+            border: none;
+            border-radius: 12px;
+            background-color: white;
+            color: #999;
+        }
+
+        .search-input::placeholder {
+            color: #aaa;
+        }
+
+        /* Section Title */
+        .section-title {
+            font-size: 42px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: #000;
+        }
+
+        /* Match Card */
+        .match-card {
+            background-color: white;
+            padding: 35px 40px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 730px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .match-info h3 {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #000;
+        }
+
+        .match-info p {
+            font-size: 22px;
+            color: #666;
+        }
+
+        /* Botão de Participar - Estilo Único com Outline */
+.btn-participate,
+.btn-participate-outline {
+    background-color: transparent;
+    color: #000;
+    border: 3px solid #000;
+    padding: 18px 50px;
+    font-size: 26px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+/* Efeito ao passar o mouse (hover) */
+.btn-participate:hover,
+.btn-participate-outline:hover {
+    background-color: #6ec06e;
+    color: white;
+    border-color: #6ec06e;
+}
+
+/* Efeito ao clicar e manter pressionado (active) */
+.btn-participate:active,
+.btn-participate-outline:active {
+    background-color: #5da85d;
+    border-color: #5da85d;
+    transform: scale(0.98);
+}
+
+/* Efeito de foco para acessibilidade */
+.btn-participate:focus,
+.btn-participate-outline:focus {
+    outline: 2px solid #6ec06e;
+    outline-offset: 2px;
+}
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 250px;
+                padding: 30px 20px;
+            }
+
+            .main-content {
+                padding: 40px 50px;
+            }
+
+            .logo {
+                font-size: 32px;
+            }
+
+            .nav-link {
+                font-size: 24px;
+            }
+
+            .greeting {
+                font-size: 36px;
+            }
+
+            .section-title {
+                font-size: 32px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 20px;
+            }
+
+            .logo {
+                font-size: 28px;
+                margin-bottom: 30px;
+            }
+
+            .nav-menu {
+                display: flex;
+                justify-content: space-around;
+            }
+
+            .nav-item {
+                margin-bottom: 0;
+            }
+
+            .nav-link {
+                font-size: 18px;
+            }
+
+            .main-content {
+                padding: 30px 20px;
+            }
+        }
+
+        /* Estilo da pagina do Perfil */
+.page-title {
+    font-size: 50px;
+    font-weight: bold;
+    margin-bottom: 50px;
+    color: #000;
+    text-align: center;
+}
+
+.profile-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    max-width: 1000px;
+    margin: 0 auto;
+    gap: 80px;
+}
+
+.profile-form {
+    flex: 1;
+    max-width: 500px;
+}
+
+.form-group {
+    margin-bottom: 35px;
+}
+
+.form-label {
+    display: block;
+    font-size: 32px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #000;
+}
+
+.form-input {
+    width: 100%;
+    padding: 20px 25px;
+    font-size: 22px;
+    border: none;
+    border-radius: 12px;
+    background-color: white;
+    color: #333;
+}
+
+.form-input::placeholder {
+    color: #aaa;
+}
+
+.form-input[readonly] {
+    background-color: white;
+    color: #666;
+}
+
+/* Edit Profile Button */
+.btn-edit {
+    background-color: #4d5ef7;
+    color: white;
+    border: none;
+    padding: 22px 70px;
+    font-size: 28px;
+    font-weight: 600;
+    border-radius: 12px;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 40px;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn-edit:hover {
+    background-color: #3d4dd7;
+    transform: translateY(-2px);
+}
+
+/* Profile Info Section */
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 35px;
+}
+
+/* Avatar Circle */
+.avatar {
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background-color: #888;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.avatar-icon {
+    width: 180px;
+    height: 180px;
+}
+
+/* Rating Stars */
+.rating {
+    display: flex;
+    gap: 15px;
+}
+
+.star {
+    font-size: 30px;
+    line-height: 1;
+}
+
+/* Delete Account Button */
+.btn-delete {
+    background-color: #ff0000;
+    color: white;
+    border: none;
+    padding: 25px 80px;
+    font-size: 32px;
+    font-weight: 600;
+    border-radius: 12px;
+    cursor: pointer;
+    display: block;
+    margin: 60px auto 0;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn-delete:hover {
+    background-color: #cc0000;
+    transform: translateY(-2px);
+}
+
+/* Responsive Design for Profile Page */
+@media (max-width: 1024px) {
+    .profile-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 50px;
+    }
+
+    .profile-info {
+        order: -1;
+    }
+
+    .avatar {
+        width: 250px;
+        height: 250px;
+    }
+
+    .star {
+        font-size: 56px;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 42px;
+    }
+
+    .form-label {
+        font-size: 24px;
+    }
+
+    .form-input {
+        font-size: 18px;
+        padding: 15px 20px;
+    }
+
+    .btn-edit {
+        font-size: 22px;
+        padding: 18px 50px;
+    }
+
+    .btn-delete {
+        font-size: 24px;
+        padding: 20px 60px;
+    }
+
+    .avatar {
+        width: 200px;
+        height: 200px;
+    }
+
+    .star {
+        font-size: 48px;
+    }
+}
+
+/* Estilo da pagina Minhas Partidas  */
+.page-title-matches {
+    font-size: 50px;
+    font-weight: bold;
+    margin-bottom: 40px;
+    color: #000;
+}
+
+.section-title-history {
+    font-size: 48px;
+    font-weight: bold;
+    margin-top: 60px;
+    margin-bottom: 40px;
+    color: #000;
+}
+
+/* Matches Section Container */
+.matches-section {
+    max-width: 1100px;
+}
+
+.matches-list-container {
+    background-color: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    max-height: 350px;
+    overflow-y: auto;
+}
+
+/* Scrollbar Styling */
+.matches-list-container::-webkit-scrollbar {
+    width: 12px;
+}
+
+.matches-list-container::-webkit-scrollbar-track {
+    background-color: #e0e0e0;
+    border-radius: 6px;
+}
+
+.matches-list-container::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 6px;
+}
+
+.matches-list-container::-webkit-scrollbar-thumb:hover {
+    background-color: #666;
+}
+
+/* Match Item */
+.match-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 30px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    background-color: white;
+}
+
+.match-item:last-child {
+    margin-bottom: 0;
+}
+
+.match-item-info {
+    flex: 1;
+}
+
+.match-item-title {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #000;
+}
+
+.match-item-details {
+    display: flex;
+    gap: 25px;
+    font-size: 20px;
+    color: #666;
+}
+
+.match-players {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.icon-person {
+    width: 24px;
+    height: 24px;
+    stroke: #666;
+}
+
+.match-date {
+    color: #666;
+}
+
+/* Buttons */
+.btn-details {
+    background-color: #4d5ef7;
+    color: white;
+    border: none;
+    padding: 18px 50px;
+    font-size: 24px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    white-space: nowrap;
+}
+
+.btn-details:hover {
+    background-color: #3d4dd7;
+    transform: translateY(-2px);
+}
+
+.btn-review {
+    background-color: #4d5ef7;
+    color: white;
+    border: none;
+    padding: 18px 50px;
+    font-size: 24px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    white-space: nowrap;
+}
+
+.btn-review:hover {
+    background-color: #3d4dd7;
+    transform: translateY(-2px);
+}
+
+/* Responsive Design for Matches Page */
+@media (max-width: 1024px) {
+    .page-title-matches {
+        font-size: 42px;
+    }
+
+    .section-title-history {
+        font-size: 38px;
+    }
+
+    .match-item-title {
+        font-size: 24px;
+    }
+
+    .match-item-details {
+        font-size: 18px;
+    }
+
+    .btn-details,
+    .btn-review {
+        font-size: 20px;
+        padding: 15px 40px;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-title-matches {
+        font-size: 32px;
+    }
+
+    .section-title-history {
+        font-size: 28px;
+    }
+
+    .match-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .match-item-title {
+        font-size: 20px;
+    }
+
+    .match-item-details {
+        font-size: 16px;
+        flex-wrap: wrap;
+    }
+
+    .btn-details,
+    .btn-review {
+        width: 100%;
+        font-size: 18px;
+        padding: 12px 30px;
+    }
+
+    .matches-list-container {
+        max-height: 400px;
+    }
+}
